@@ -1,7 +1,8 @@
 {
-  "name": "my-app",
+  "name": "pathfinding-visualizer-plus",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://justinjoco.github.io/pathfinding-visualizer-plus",
   "dependencies": {
     "gh-pages": "^3.2.3",
     "react": "^16.10.1",
