@@ -1,4 +1,4 @@
-Pathfinding Visualizer Plus
+# Pathfinding Visualizer Plus
 
 This project is based off of Clement Mihailescu's [Pathfinding Visualizer project](https://github.com/clementmihailescu/Pathfinding-Visualizer).
 
