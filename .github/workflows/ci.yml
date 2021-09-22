@@ -12,6 +12,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
+      - run: npm install -g yarn
       - run: yarn install
       - run: |
           git config --global user.name $user_name
