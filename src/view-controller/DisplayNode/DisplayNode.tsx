@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './Node.css';
+import './DisplayNode.css';
 
 type Props = {
   col: number
@@ -11,7 +11,7 @@ type Props = {
   onMouseEnter: (row: number, col: number) => void
   onMouseUp: () => void
 }
-export default class Node extends Component<Props> {
+export default class NodeComponent extends Component<Props> {
   render() {
     const {
       col,

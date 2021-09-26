@@ -1,6 +1,6 @@
-export type Grid = NodeInfo[][]
+export type Grid = Node[][]
 
-export type NodeInfo = {
+export type Node = {
     col: number
     row: number
     isStart: boolean
@@ -8,5 +8,5 @@ export type NodeInfo = {
     distance: number
     isVisited: boolean
     isWall: boolean
-    previousNode: NodeInfo | null;
+    previousNode: Node | null;
 }

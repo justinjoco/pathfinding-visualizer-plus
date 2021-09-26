@@ -1,5 +1,5 @@
-import { Grid, NodeInfo } from '../common'
+import { Grid, Node } from '../common'
 
-export function dfs(grid: Grid, startNode: NodeInfo, finishNode: NodeInfo) {
+export function dfs(grid: Grid, startNode: Node, finishNode: Node) {
 
 }

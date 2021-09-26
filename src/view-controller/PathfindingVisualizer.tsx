@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import Node from './Node/Node'
+import DisplayNode from './DisplayNode/DisplayNode'
 import { Button } from 'reactstrap'
 import { dijkstra } from '../model/dijkstra'
 import { getNodesInShortestPathOrder } from '../model/common'
-import { Grid, NodeInfo } from '../common'
+import { Grid, Node } from '../common'
 import './PathfindingVisualizer.css';
 
 const START_NODE_ROW = 10;
@@ -19,7 +19,7 @@ type State = {
   pathfinder: Pathfinder
 }
 
-type Pathfinder = (grid: Grid, startNode: NodeInfo, finishNode: NodeInfo) => NodeInfo[]
+type Pathfinder = (grid: Grid, startNode: Node, finishNode: Node) => Node[]
 
 export default class PathfindingVisualizer extends Component<Props, State> {
   constructor(props: Props) {
@@ -51,7 +51,7 @@ export default class PathfindingVisualizer extends Component<Props, State> {
     this.setState({ mouseIsPressed: false });
   }
 
-  animatePathfinder(visitedNodesInOrder: NodeInfo[], nodesInShortestPathOrder: NodeInfo[]) {
+  animatePathfinder(visitedNodesInOrder: Node[], nodesInShortestPathOrder: Node[]) {
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
         setTimeout(() => {
@@ -70,7 +70,7 @@ export default class PathfindingVisualizer extends Component<Props, State> {
     }
   }
 
-  animateShortestPath(nodesInShortestPathOrder: NodeInfo[]) {
+  animateShortestPath(nodesInShortestPathOrder: Node[]) {
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
       setTimeout(() => {
         const node = nodesInShortestPathOrder[i];
@@ -82,7 +82,7 @@ export default class PathfindingVisualizer extends Component<Props, State> {
     }
   }
 
-  visualizePathfinder(pathfinder: (grid: Grid, startNode: NodeInfo, finishNode: NodeInfo) => NodeInfo[]) {
+  visualizePathfinder(pathfinder: (grid: Grid, startNode: Node, finishNode: Node) => Node[]) {
     const { grid } = this.state;
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
@@ -106,7 +106,7 @@ export default class PathfindingVisualizer extends Component<Props, State> {
                 {row.map((node, nodeIdx) => {
                   const { row, col, isFinish, isStart, isWall } = node;
                   return (
-                    <Node
+                    <DisplayNode
                       key={nodeIdx}
                       col={col}
                       isFinish={isFinish}
@@ -117,7 +117,7 @@ export default class PathfindingVisualizer extends Component<Props, State> {
                         this.handleMouseEnter(row, col)
                       }
                       onMouseUp={() => this.handleMouseUp()}
-                      row={row}></Node>
+                      row={row} />
                   );
                 })}
               </div>
@@ -141,7 +141,7 @@ const getInitialGrid = (): Grid => {
   return grid;
 };
 
-const createNode = (col: number, row: number): NodeInfo => {
+const createNode = (col: number, row: number): Node => {
   return {
     col,
     row,

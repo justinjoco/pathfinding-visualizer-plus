@@ -1,11 +1,11 @@
-import { Grid, NodeInfo } from '../common'
+import { Grid, Node } from '../common'
 
 // Performs Dijkstra's algorithm; returns *all* nodes in the order
 // in which they were visited. Also makes nodes point back to their
 // previous node, effectively allowing us to compute the shortest path
 // by backtracking from the finish node.
 
-export function dijkstra(grid: Grid, startNode: NodeInfo, finishNode: NodeInfo): NodeInfo[] {
+export function dijkstra(grid: Grid, startNode: Node, finishNode: Node): Node[] {
   const visitedNodesInOrder = [];
   startNode.distance = 0;
   const unvisitedNodes = getAllNodes(grid);
@@ -27,11 +27,11 @@ export function dijkstra(grid: Grid, startNode: NodeInfo, finishNode: NodeInfo):
   return visitedNodesInOrder
 }
 
-function sortNodesByDistance(unvisitedNodes: NodeInfo[]) {
+function sortNodesByDistance(unvisitedNodes: Node[]) {
   unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
 }
 
-function updateUnvisitedNeighbors(node: NodeInfo, grid: Grid) {
+function updateUnvisitedNeighbors(node: Node, grid: Grid) {
   const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
   for (const neighbor of unvisitedNeighbors) {
     neighbor.distance = node.distance + 1;
@@ -39,7 +39,7 @@ function updateUnvisitedNeighbors(node: NodeInfo, grid: Grid) {
   }
 }
 
-function getUnvisitedNeighbors(node: NodeInfo, grid: Grid) {
+function getUnvisitedNeighbors(node: Node, grid: Grid) {
   const neighbors = [];
   const { col, row } = node;
   if (row > 0) neighbors.push(grid[row - 1][col]);
@@ -49,7 +49,7 @@ function getUnvisitedNeighbors(node: NodeInfo, grid: Grid) {
   return neighbors.filter(neighbor => !neighbor.isVisited);
 }
 
-function getAllNodes(grid: Grid): NodeInfo[] {
+function getAllNodes(grid: Grid): Node[] {
   const nodes = [];
   for (const row of grid) {
     for (const node of row) {
