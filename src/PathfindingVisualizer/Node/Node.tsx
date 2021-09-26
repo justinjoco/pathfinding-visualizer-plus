@@ -1,26 +1,35 @@
-import React, {Component} from 'react';
-
+import React, { Component } from 'react';
 import './Node.css';
 
-export default class Node extends Component {
+type Props = {
+  col: number
+  row: number
+  isFinish: boolean
+  isStart: boolean
+  isWall: boolean
+  onMouseDown: (row: number, col: number) => void
+  onMouseEnter: (row: number, col: number) => void
+  onMouseUp: () => void
+}
+export default class Node extends Component<Props> {
   render() {
     const {
       col,
+      row,
       isFinish,
       isStart,
       isWall,
       onMouseDown,
       onMouseEnter,
       onMouseUp,
-      row,
     } = this.props;
     const extraClassName = isFinish
       ? 'node-finish'
       : isStart
-      ? 'node-start'
-      : isWall
-      ? 'node-wall'
-      : '';
+        ? 'node-start'
+        : isWall
+          ? 'node-wall'
+          : '';
 
     return (
       <div
