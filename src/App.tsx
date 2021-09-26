@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import PathfindingVisualizer from './PathfindingVisualizer/PathfindingVisualizer';
+import PathfindingVisualizer from './view-controller/PathfindingVisualizer';
 
 export default class App extends Component {
   render() {

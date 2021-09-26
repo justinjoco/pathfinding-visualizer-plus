@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Node from './Node/Node';
-import { dijkstra, getNodesInShortestPathOrder } from '../algorithms/dijkstra';
+import { dijkstra, getNodesInShortestPathOrder } from '../model/dijkstra';
 import { Grid, NodeInfo } from '../common'
 import './PathfindingVisualizer.css';
 
