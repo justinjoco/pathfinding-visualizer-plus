@@ -1,5 +1,5 @@
 import { Grid, NodeInfo } from '../common'
 
-export function bfs() {
+export function bfs(grid: Grid, startNode: NodeInfo, finishNode: NodeInfo) {
 
 }

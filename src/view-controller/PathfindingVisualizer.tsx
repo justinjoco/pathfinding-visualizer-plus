@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
-import Node from './Node/Node';
-import { dijkstra, getNodesInShortestPathOrder } from '../model/dijkstra';
+import React, { Component } from 'react'
+import Node from './Node/Node'
+import { Button } from 'reactstrap'
+import { dijkstra } from '../model/dijkstra'
+import { getNodesInShortestPathOrder } from '../model/common'
 import { Grid, NodeInfo } from '../common'
 import './PathfindingVisualizer.css';
 
@@ -14,7 +16,10 @@ type Props = {}
 type State = {
   grid: Grid
   mouseIsPressed: boolean
+  pathfinder: Pathfinder
 }
+
+type Pathfinder = (grid: Grid, startNode: NodeInfo, finishNode: NodeInfo) => NodeInfo[]
 
 export default class PathfindingVisualizer extends Component<Props, State> {
   constructor(props: Props) {
@@ -22,6 +27,7 @@ export default class PathfindingVisualizer extends Component<Props, State> {
     this.state = {
       grid: [],
       mouseIsPressed: false,
+      pathfinder: dijkstra
     };
   }
 
@@ -45,7 +51,7 @@ export default class PathfindingVisualizer extends Component<Props, State> {
     this.setState({ mouseIsPressed: false });
   }
 
-  animateDijkstra(visitedNodesInOrder: NodeInfo[], nodesInShortestPathOrder: NodeInfo[]) {
+  animatePathfinder(visitedNodesInOrder: NodeInfo[], nodesInShortestPathOrder: NodeInfo[]) {
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
         setTimeout(() => {
@@ -76,23 +82,23 @@ export default class PathfindingVisualizer extends Component<Props, State> {
     }
   }
 
-  visualizeDijkstra() {
+  visualizePathfinder(pathfinder: (grid: Grid, startNode: NodeInfo, finishNode: NodeInfo) => NodeInfo[]) {
     const { grid } = this.state;
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
-    const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
+    const visitedNodesInOrder = pathfinder(grid, startNode, finishNode);
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
-    this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+    this.animatePathfinder(visitedNodesInOrder, nodesInShortestPathOrder);
   }
 
   render() {
-    const { grid } = this.state;
+    const { grid, pathfinder } = this.state;
 
     return (
-      <>
-        <button onClick={() => this.visualizeDijkstra()}>
-          Visualize Dijkstra's Algorithm
-        </button>
+      <div>
+        <Button color="primary" onClick={() => this.visualizePathfinder(pathfinder)}>
+          Visualize
+        </Button>
         <div className="grid">
           {grid.map((row, rowIdx) => {
             return (
@@ -118,7 +124,7 @@ export default class PathfindingVisualizer extends Component<Props, State> {
             );
           })}
         </div>
-      </>
+      </div>
     );
   }
 }

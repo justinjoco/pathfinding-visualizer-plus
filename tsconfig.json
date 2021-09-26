@@ -19,7 +19,13 @@
     "allowJs": true,
     "jsx": "react"
   },
+  "types": [
+    "node",
+    "webpack",
+    "react",
+    "reactstrap"
+  ],
   "include": [
     "src"
-  ]
+  ],
 }
