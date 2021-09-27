@@ -40,11 +40,15 @@ export function getAllNeighbors(node: Node, grid: Grid, getUnvisited: boolean = 
   return neighbors
 }
 
-export function updateUnvisitedNeighbors(node: Node, grid: Grid, withDist: boolean = false) {
+export function updateUnvisitedNeighbors(node: Node, grid: Grid, withDist: boolean = false, incrementValue: number = 1) {
   const unvisitedNeighbors = getAllNeighbors(node, grid, true)
   for (const neighbor of unvisitedNeighbors) {
     if (withDist)
-      neighbor.distance = node.distance + 1
+      neighbor.distance = node.distance + incrementValue
     neighbor.previousNode = node
   }
+}
+
+export function sortNodesByDistance(unvisitedNodes: Node[]) {
+  unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance)
 }
