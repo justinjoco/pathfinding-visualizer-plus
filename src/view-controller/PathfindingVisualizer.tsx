@@ -60,7 +60,8 @@ export default class PathfindingVisualizer extends Component<Props, State> {
   }
 
   handleMouseEnter(row: number, col: number) {
-    if (!this.state.mouseIsPressed) return
+    if (!this.state.mouseIsPressed)
+      return
     const newGrid = getNewGridWithWallToggled(this.state.grid, row, col)
     this.setState({ grid: newGrid })
   }

@@ -6,7 +6,6 @@ Done
 - Migrate the core logic from JS to TS
 
 TODO:
-- Add more pathfinding algorithms (BFS, DFS, A*) have them be selectable via dropdown
 - Animate start to end movement
 - Have user choose the start location
 - Have user choose the end location
