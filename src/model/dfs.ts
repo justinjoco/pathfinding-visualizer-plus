@@ -6,7 +6,7 @@ export function dfs(grid: Grid, startNode: Node, finishNode: Node): Node[] {
 
     const stack = []
     stack.push(startNode)
-    while (!!stack.length) {
+    while (stack) {
         const v = stack.pop()
         // If we encounter a wall, we skip it.
         if (v !== undefined) {
