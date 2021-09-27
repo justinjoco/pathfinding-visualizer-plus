@@ -11,3 +11,14 @@ export function getNodesInShortestPathOrder(finishNode: Node): Node[] {
     }
     return nodesInShortestPathOrder;
 }
+
+export function getAllNodes(grid: Grid): Node[] {
+    const nodes = [];
+    for (const row of grid) {
+        for (const node of row) {
+            nodes.push(node);
+        }
+    }
+    return nodes;
+}
+
