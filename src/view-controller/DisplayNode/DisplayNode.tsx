@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import './DisplayNode.css';
+import React, { Component } from 'react'
+import './DisplayNode.css'
 
 type Props = {
   col: number
@@ -22,14 +22,14 @@ export default class NodeComponent extends Component<Props> {
       onMouseDown,
       onMouseEnter,
       onMouseUp,
-    } = this.props;
+    } = this.props
     const extraClassName = isFinish
       ? 'node-finish'
       : isStart
         ? 'node-start'
         : isWall
           ? 'node-wall'
-          : '';
+          : ''
 
     return (
       <div
@@ -38,6 +38,6 @@ export default class NodeComponent extends Component<Props> {
         onMouseDown={() => onMouseDown(row, col)}
         onMouseEnter={() => onMouseEnter(row, col)}
         onMouseUp={() => onMouseUp()}></div>
-    );
+    )
   }
 }

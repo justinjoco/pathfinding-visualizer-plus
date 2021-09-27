@@ -8,5 +8,5 @@ export type Node = {
     distance: number
     isVisited: boolean
     isWall: boolean
-    previousNode: Node | null;
+    previousNode: Node | null
 }

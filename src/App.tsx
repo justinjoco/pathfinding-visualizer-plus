@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import './App.css';
-import PathfindingVisualizer from './view-controller/PathfindingVisualizer';
+import React, { Component } from 'react'
+import './App.css'
+import PathfindingVisualizer from './view-controller/PathfindingVisualizer'
 
 export default class App extends Component {
   render() {
@@ -8,7 +8,7 @@ export default class App extends Component {
       <div className="App">
         <PathfindingVisualizer></PathfindingVisualizer>
       </div>
-    );
+    )
   }
 }
 
