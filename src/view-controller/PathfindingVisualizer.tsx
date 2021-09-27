@@ -6,7 +6,7 @@ import { bfs } from '../model/bfs'
 import { dfs } from '../model/dfs'
 import { aStar } from '../model/a_star'
 
-import { getNodesInShortestPathOrder } from '../model/common'
+import { getNodesInShortestPathOrder } from '../model/utilities'
 import { Grid, Node } from '../common'
 import './PathfindingVisualizer.css'
 
