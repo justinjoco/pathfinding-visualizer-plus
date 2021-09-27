@@ -23,7 +23,7 @@ export function getAllNodes(grid: Grid): Node[] {
 }
 
 
-export function getUnvisitedNeighbors(node: Node, grid: Grid): Node[] {
+export function getAllNeighbors(node: Node, grid: Grid, getUnvisited: boolean = false): Node[] {
   const neighbors = []
   const { col, row } = node
   if (row > 0)
@@ -35,27 +35,16 @@ export function getUnvisitedNeighbors(node: Node, grid: Grid): Node[] {
   if (col < grid[0].length - 1)
     neighbors.push(grid[row][col + 1])
 
-  return neighbors.filter(neighbor => !neighbor.isVisited)
-}
-
-export function getAllNeighbors(node: Node, grid: Grid): Node[] {
-  const neighbors = []
-  const { col, row } = node
-  if (row > 0)
-    neighbors.push(grid[row - 1][col])
-  if (row < grid.length - 1)
-    neighbors.push(grid[row + 1][col])
-  if (col > 0)
-    neighbors.push(grid[row][col - 1])
-  if (col < grid[0].length - 1)
-    neighbors.push(grid[row][col + 1])
-
+  if (getUnvisited)
+    return neighbors.filter(neighbor => !neighbor.isVisited)
   return neighbors
 }
 
-export function updateUnvisitedNeighborsNoDist(node: Node, grid: Grid) {
-  const unvisitedNeighbors = getUnvisitedNeighbors(node, grid)
+export function updateUnvisitedNeighbors(node: Node, grid: Grid, withDist: boolean = false) {
+  const unvisitedNeighbors = getAllNeighbors(node, grid, true)
   for (const neighbor of unvisitedNeighbors) {
+    if (withDist)
+      neighbor.distance = node.distance + 1
     neighbor.previousNode = node
   }
 }

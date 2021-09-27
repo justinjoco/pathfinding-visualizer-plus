@@ -1,5 +1,5 @@
 import { Grid, Node } from '../common'
-import { getAllNeighbors, updateUnvisitedNeighborsNoDist } from './utilities'
+import { getAllNeighbors, updateUnvisitedNeighbors } from './utilities'
 
 export function dfs(grid: Grid, startNode: Node, finishNode: Node): Node[] {
     const visitedNodesInOrder = []
@@ -23,7 +23,7 @@ export function dfs(grid: Grid, startNode: Node, finishNode: Node): Node[] {
                 for (const neighbor of getAllNeighbors(v, grid)) {
                     stack.push(neighbor)
                 }
-                updateUnvisitedNeighborsNoDist(v, grid)
+                updateUnvisitedNeighbors(v, grid)
             }
         }
     }
