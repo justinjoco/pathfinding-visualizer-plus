@@ -25,7 +25,7 @@ export function dijkstra(grid: Grid, startNode: Node, finishNode: Node): Node[] 
       visitedNodesInOrder.push(closestNode)
       if (closestNode === finishNode)
         return visitedNodesInOrder
-      updateUnvisitedNeighbors(closestNode, grid)
+      updateUnvisitedNeighborsWithDist(closestNode, grid)
     }
   }
   return visitedNodesInOrder
@@ -35,7 +35,7 @@ function sortNodesByDistance(unvisitedNodes: Node[]) {
   unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance)
 }
 
-function updateUnvisitedNeighbors(node: Node, grid: Grid) {
+function updateUnvisitedNeighborsWithDist(node: Node, grid: Grid) {
   const unvisitedNeighbors = getUnvisitedNeighbors(node, grid)
   for (const neighbor of unvisitedNeighbors) {
     neighbor.distance = node.distance + 1

@@ -69,6 +69,7 @@ export default class PathfindingVisualizer extends Component<Props, State> {
     this.setState({ mouseIsPressed: false })
   }
 
+
   animatePathfinder(visitedNodesInOrder: Node[], nodesInShortestPathOrder: Node[]) {
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
@@ -134,7 +135,8 @@ export default class PathfindingVisualizer extends Component<Props, State> {
           pathfinderName = Algorithms.A_Star
           break
       }
-      this.setState({ pathfinderName, pathfinder: pathFinderFunc })
+      const grid = getInitialGrid()
+      this.setState({ pathfinderName, pathfinder: pathFinderFunc, grid })
     }
   }
   render() {
