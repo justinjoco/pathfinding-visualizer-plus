@@ -4,7 +4,7 @@ import { getAllNeighbors, updateUnvisitedNeighborsNoDist } from './utilities'
 export function dfs(grid: Grid, startNode: Node, finishNode: Node): Node[] {
     const visitedNodesInOrder = []
 
-    let stack = []
+    const stack = []
     stack.push(startNode)
     while (!!stack.length) {
         const v = stack.pop()
