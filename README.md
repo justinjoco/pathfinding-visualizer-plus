@@ -4,6 +4,7 @@ This project is based off of Clement Mihailescu's [Pathfinding Visualizer projec
 
 Done
 - Migrate the core logic from JS to TS
+- Added more pathfinding algorithms (BFS, DFS, A*) have them be selectable via dropdown
 
 TODO:
 - Animate start to end movement
