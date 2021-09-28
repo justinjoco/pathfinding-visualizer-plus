@@ -32,6 +32,7 @@ type State = {
   pathfinderName: Algorithms
   pathfinder: Pathfinder
   rSelected: number
+  radioInstruction: string
 }
 
 type Pathfinder = (grid: Grid, startNode: Node, finishNode: Node) => Node[]
@@ -48,6 +49,12 @@ enum Setting {
   StartNode,
   EndNode
 }
+
+const instructionMap = {
+  [Setting.Walls]: "Click and drag across the grid to set up walls",
+  [Setting.StartNode]: "Click on a node to set the start node",
+  [Setting.EndNode]: "Click on a node to set the end location"
+}
 export default class PathfindingVisualizer extends Component<Props, State> {
   constructor(props: Props) {
     super(props)
@@ -59,7 +66,8 @@ export default class PathfindingVisualizer extends Component<Props, State> {
       dropdownOpen: false,
       pathfinderName: Algorithms.Dijkstra,
       pathfinder: dijkstra,
-      rSelected: 1
+      rSelected: 1,
+      radioInstruction: ""
     }
     this.handleMouseDown = this.handleMouseDown.bind(this)
     this.handleMouseEnter = this.handleMouseEnter.bind(this)
@@ -249,6 +257,7 @@ export default class PathfindingVisualizer extends Component<Props, State> {
             <DropdownItem onClick={this.onDropdownItemClick} dropdownvalue={Algorithms.A_Star}>A*</DropdownItem>
           </DropdownMenu>
         </Dropdown>
+        <h5>{instructionMap[rSelected as Setting]}</h5>
         <div className="grid">
           {grid.map((row, rowIdx) => {
             return (
