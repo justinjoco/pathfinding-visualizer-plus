@@ -1,6 +1,6 @@
 import React, { Component, MouseEvent } from 'react'
 import DisplayNode from './DisplayNode/DisplayNode'
-import { Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
+import { Button, ButtonGroup, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 import { dijkstra } from '../model/dijkstra'
 import { bfs } from '../model/bfs'
 import { dfs } from '../model/dfs'
@@ -9,6 +9,7 @@ import { aStar } from '../model/a_star'
 import { getNodesInShortestPathOrder } from '../model/utilities'
 import { Grid, Node } from '../common'
 import './PathfindingVisualizer.css'
+import { start } from 'repl'
 
 const START_NODE_ROW = 10
 const START_NODE_COL = 15
@@ -30,6 +31,7 @@ type State = {
   dropdownOpen: boolean
   pathfinderName: Algorithms
   pathfinder: Pathfinder
+  rSelected: number
 }
 
 type Pathfinder = (grid: Grid, startNode: Node, finishNode: Node) => Node[]
@@ -39,6 +41,12 @@ enum Algorithms {
   DFS = "Depth First Search",
   BFS = "Breadth First Search",
   A_Star = "A*"
+}
+
+enum Setting {
+  Walls = 1,
+  StartNode,
+  EndNode
 }
 export default class PathfindingVisualizer extends Component<Props, State> {
   constructor(props: Props) {
@@ -50,69 +58,59 @@ export default class PathfindingVisualizer extends Component<Props, State> {
       mouseIsPressed: false,
       dropdownOpen: false,
       pathfinderName: Algorithms.Dijkstra,
-      pathfinder: dijkstra
+      pathfinder: dijkstra,
+      rSelected: 1
     }
     this.handleMouseDown = this.handleMouseDown.bind(this)
     this.handleMouseEnter = this.handleMouseEnter.bind(this)
     this.handleMouseUp = this.handleMouseUp.bind(this)
     this.onDropdownItemClick = this.onDropdownItemClick.bind(this)
+    this.setRSelected = this.setRSelected.bind(this)
   }
 
   componentDidMount() {
-    const grid = getInitialGrid()
+    const grid = this.getInitialGrid()
     this.setState({ grid })
   }
 
   handleMouseDown(row: number, col: number) {
-    const newGrid = getNewGridWithWallToggled(this.state.grid, row, col)
-    this.setState({ grid: newGrid, mouseIsPressed: true })
+    const { grid, rSelected } = this.state
+
+    switch (rSelected) {
+      case Setting.Walls:
+        this.setState({ grid: this.getNewGridWithWallToggled(this.state.grid, row, col), mouseIsPressed: true })
+        break
+      case Setting.StartNode:
+        this.setState({ startCoord: { row, col }, grid: this.setGridNodesToUnvisited(grid), mouseIsPressed: true })
+        break
+      case Setting.EndNode:
+        this.setState({ endCoord: { row, col }, grid: this.setGridNodesToUnvisited(grid), mouseIsPressed: true })
+        break
+    }
   }
 
   handleMouseEnter(row: number, col: number) {
-    if (!this.state.mouseIsPressed)
-      return
-    const newGrid = getNewGridWithWallToggled(this.state.grid, row, col)
-    this.setState({ grid: newGrid })
+    if (this.state.mouseIsPressed) {
+      const newGrid = this.getNewGridWithWallToggled(this.state.grid, row, col)
+      this.setState({ grid: newGrid })
+    }
   }
 
   handleMouseUp() {
     this.setState({ mouseIsPressed: false })
   }
 
-  /*
-    animatePathfinder(visitedNodesInOrder: Node[], nodesInShortestPathOrder: Node[]) {
-      for (let i = 0; i <= visitedNodesInOrder.length; i++) {
-        if (i === visitedNodesInOrder.length) {
-          //   setTimeout(() => {
-          this.animateShortestPath(nodesInShortestPathOrder)
-          //   }, 10 * i)
-          return
-        }
-        
-        setTimeout(() => {
-          const node = visitedNodesInOrder[i]
-          let displayNode = document.getElementById(`node-${node.row}-${node.col}`)
-  
-          if (displayNode !== null)
-            displayNode.className =
-              'node node-visited'
-        }, 10 * i)
-      }
-    }
-  */
   highlightShortestPath(nodesInShortestPathOrder: Node[]) {
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
-      // setTimeout(() => {
       const node = nodesInShortestPathOrder[i]
       let displayNode = document.getElementById(`node-${node.row}-${node.col}`)
 
       if (displayNode !== null) displayNode.className =
         'node node-shortest-path'
-      // }, 50 * i)
     }
   }
 
-  moveStartNode(nodesInShortestPathOrder: Node[]) {
+  moveStartNodeToFinishNode(nodesInShortestPathOrder: Node[]) {
     for (let i = 1; i < nodesInShortestPathOrder.length; i++) {
       setTimeout(() => {
         const node = nodesInShortestPathOrder[i]
@@ -140,14 +138,18 @@ export default class PathfindingVisualizer extends Component<Props, State> {
     const finishNode = grid[endCoord.row][endCoord.col]
     pathfinder(grid, startNode, finishNode)
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode)
-    // this.animatePathfinder(visitedNodesInOrder, nodesInShortestPathOrder)
     this.highlightShortestPath(nodesInShortestPathOrder)
-    this.moveStartNode(nodesInShortestPathOrder)
+    this.moveStartNodeToFinishNode(nodesInShortestPathOrder)
+    console.log("FINISHED MOVING")
+
+
+
   }
 
   toggle = () => this.setState((prevState) => ({ dropdownOpen: !prevState.dropdownOpen }))
 
   onDropdownItemClick(sender: MouseEvent<HTMLButtonElement>) {
+    const { grid } = this.state
     if (sender !== null) {
       let dropDownValue = sender.currentTarget.getAttribute("dropdownvalue")
       let pathFinderFunc = dijkstra
@@ -170,17 +172,78 @@ export default class PathfindingVisualizer extends Component<Props, State> {
           pathfinderName = Algorithms.A_Star
           break
       }
-      const grid = getInitialGrid()
-      this.setState({ pathfinderName, pathfinder: pathFinderFunc, grid })
+      const newGrid = this.setGridNodesToUnvisited(grid)
+      this.setState({ pathfinderName, pathfinder: pathFinderFunc, grid: newGrid })
     }
   }
+
+  getInitialGrid = (resetVisited: boolean = true): Grid => {
+    const grid = []
+    for (let row = 0; row < 20; row++) {
+      const currentRow = []
+      for (let col = 0; col < 50; col++) {
+        currentRow.push(this.createNode(col, row, resetVisited))
+      }
+      grid.push(currentRow)
+    }
+    return grid
+  }
+
+  setGridNodesToUnvisited = (grid: Grid): Grid => {
+    for (let row = 0; row < 20; row++) {
+      for (let col = 0; col < 50; col++) {
+        grid[row][col].isVisited = false
+        grid[row][col].distance = Infinity
+        grid[row][col].previousNode = null
+      }
+    }
+    return grid
+  }
+
+  createNode = (col: number, row: number, resetVisited: boolean = true): Node => {
+    return {
+      col,
+      row,
+      distance: Infinity,
+      isVisited: !resetVisited,
+      isWall: false,
+      previousNode: null,
+    }
+  }
+
+  getNewGridWithWallToggled = (grid: Grid, row: number, col: number): Grid => {
+    const newGrid = grid.slice()
+    const node = newGrid[row][col]
+    const newNode = {
+      ...node,
+      isWall: !node.isWall,
+    }
+    newGrid[row][col] = newNode
+    return newGrid
+  }
+
+  setRSelected(id: number) {
+    this.setState({ rSelected: id })
+  }
+
   render() {
-    const { grid, dropdownOpen, pathfinderName, pathfinder } = this.state
+    const { grid, dropdownOpen, startCoord, endCoord, rSelected, pathfinderName, pathfinder } = this.state
+    console.log("StartCoord", startCoord)
+    console.log("endCoord", endCoord)
+
     return (
       <div>
         <Button color="primary" onClick={() => this.visualizePathfinder(pathfinder)}>
           Move via {pathfinderName}
         </Button>
+
+        <div>
+          <ButtonGroup>
+            <Button color="info" onClick={() => this.setRSelected(Setting.Walls)} active={rSelected === Setting.Walls}>Set Walls</Button>
+            <Button color="info" onClick={() => this.setRSelected(Setting.StartNode)} active={rSelected === Setting.StartNode}>Set Start Node</Button>
+            <Button color="info" onClick={() => this.setRSelected(Setting.EndNode)} active={rSelected === Setting.EndNode}>Set End Node</Button>
+          </ButtonGroup>
+        </div>
         <Dropdown isOpen={dropdownOpen} toggle={this.toggle}>
           <DropdownToggle caret>
             Algorithms
@@ -197,14 +260,14 @@ export default class PathfindingVisualizer extends Component<Props, State> {
             return (
               <div key={rowIdx}>
                 {row.map((node, nodeIdx) => {
-                  const { row, col, isFinish, isStart, isWall } = node
+                  const { row, col, isWall } = node
                   return (
                     <DisplayNode
                       key={nodeIdx}
                       row={row}
                       col={col}
-                      isFinish={isFinish}
-                      isStart={isStart}
+                      isStart={row === startCoord.row && col === startCoord.col}
+                      isFinish={row === endCoord.row && col === endCoord.col}
                       isWall={isWall}
                       onMouseDown={(row: number, col: number) => this.handleMouseDown(row, col)}
                       onMouseEnter={(row: number, col: number) =>
@@ -223,38 +286,5 @@ export default class PathfindingVisualizer extends Component<Props, State> {
   }
 }
 
-const getInitialGrid = (): Grid => {
-  const grid = []
-  for (let row = 0; row < 20; row++) {
-    const currentRow = []
-    for (let col = 0; col < 50; col++) {
-      currentRow.push(createNode(col, row))
-    }
-    grid.push(currentRow)
-  }
-  return grid
-}
 
-const createNode = (col: number, row: number): Node => {
-  return {
-    col,
-    row,
-    isStart: row === START_NODE_ROW && col === START_NODE_COL,
-    isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
-    distance: Infinity,
-    isVisited: false,
-    isWall: false,
-    previousNode: null,
-  }
-}
 
-const getNewGridWithWallToggled = (grid: Grid, row: number, col: number): Grid => {
-  const newGrid = grid.slice()
-  const node = newGrid[row][col]
-  const newNode = {
-    ...node,
-    isWall: !node.isWall,
-  }
-  newGrid[row][col] = newNode
-  return newGrid
-}
