@@ -140,10 +140,6 @@ export default class PathfindingVisualizer extends Component<Props, State> {
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode)
     this.highlightShortestPath(nodesInShortestPathOrder)
     this.moveStartNodeToFinishNode(nodesInShortestPathOrder)
-    console.log("FINISHED MOVING")
-
-
-
   }
 
   toggle = () => this.setState((prevState) => ({ dropdownOpen: !prevState.dropdownOpen }))
@@ -228,15 +224,13 @@ export default class PathfindingVisualizer extends Component<Props, State> {
 
   render() {
     const { grid, dropdownOpen, startCoord, endCoord, rSelected, pathfinderName, pathfinder } = this.state
-    console.log("StartCoord", startCoord)
-    console.log("endCoord", endCoord)
 
     return (
       <div>
+        <h1>Pathfinding Visualizer Plus</h1>
         <Button color="primary" onClick={() => this.visualizePathfinder(pathfinder)}>
           Move via {pathfinderName}
         </Button>
-
         <div>
           <ButtonGroup>
             <Button color="info" onClick={() => this.setRSelected(Setting.Walls)} active={rSelected === Setting.Walls}>Set Walls</Button>
