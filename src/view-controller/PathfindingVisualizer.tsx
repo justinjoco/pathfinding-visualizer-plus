@@ -9,7 +9,6 @@ import { aStar } from '../model/a_star'
 import { getNodesInShortestPathOrder } from '../model/utilities'
 import { Grid, Node } from '../common'
 import './PathfindingVisualizer.css'
-import { start } from 'repl'
 
 const START_NODE_ROW = 10
 const START_NODE_COL = 15
@@ -32,7 +31,6 @@ type State = {
   pathfinderName: Algorithms
   pathfinder: Pathfinder
   rSelected: number
-  radioInstruction: string
 }
 
 type Pathfinder = (grid: Grid, startNode: Node, finishNode: Node) => Node[]
@@ -67,7 +65,6 @@ export default class PathfindingVisualizer extends Component<Props, State> {
       pathfinderName: Algorithms.Dijkstra,
       pathfinder: dijkstra,
       rSelected: 1,
-      radioInstruction: ""
     }
     this.handleMouseDown = this.handleMouseDown.bind(this)
     this.handleMouseEnter = this.handleMouseEnter.bind(this)
