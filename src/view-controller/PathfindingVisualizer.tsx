@@ -17,8 +17,15 @@ const FINISH_NODE_COL = 35
 
 type Props = {}
 
+type Coord = {
+  row: number,
+  col: number
+}
+
 type State = {
   grid: Grid
+  startCoord: Coord
+  endCoord: Coord
   mouseIsPressed: boolean
   dropdownOpen: boolean
   pathfinderName: Algorithms
@@ -38,6 +45,8 @@ export default class PathfindingVisualizer extends Component<Props, State> {
     super(props)
     this.state = {
       grid: [],
+      startCoord: { row: START_NODE_ROW, col: START_NODE_COL } as Coord,
+      endCoord: { row: FINISH_NODE_ROW, col: FINISH_NODE_COL } as Coord,
       mouseIsPressed: false,
       dropdownOpen: false,
       pathfinderName: Algorithms.Dijkstra,
@@ -70,45 +79,70 @@ export default class PathfindingVisualizer extends Component<Props, State> {
     this.setState({ mouseIsPressed: false })
   }
 
-
-  animatePathfinder(visitedNodesInOrder: Node[], nodesInShortestPathOrder: Node[]) {
-    for (let i = 0; i <= visitedNodesInOrder.length; i++) {
-      if (i === visitedNodesInOrder.length) {
-        setTimeout(() => {
+  /*
+    animatePathfinder(visitedNodesInOrder: Node[], nodesInShortestPathOrder: Node[]) {
+      for (let i = 0; i <= visitedNodesInOrder.length; i++) {
+        if (i === visitedNodesInOrder.length) {
+          //   setTimeout(() => {
           this.animateShortestPath(nodesInShortestPathOrder)
+          //   }, 10 * i)
+          return
+        }
+        
+        setTimeout(() => {
+          const node = visitedNodesInOrder[i]
+          let displayNode = document.getElementById(`node-${node.row}-${node.col}`)
+  
+          if (displayNode !== null)
+            displayNode.className =
+              'node node-visited'
         }, 10 * i)
-        return
       }
-      setTimeout(() => {
-        const node = visitedNodesInOrder[i]
-        let displayNode = document.getElementById(`node-${node.row}-${node.col}`)
+    }
+  */
+  highlightShortestPath(nodesInShortestPathOrder: Node[]) {
+    for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
+      // setTimeout(() => {
+      const node = nodesInShortestPathOrder[i]
+      let displayNode = document.getElementById(`node-${node.row}-${node.col}`)
 
-        if (displayNode !== null)
-          displayNode.className =
-            'node node-visited'
-      }, 10 * i)
+      if (displayNode !== null) displayNode.className =
+        'node node-shortest-path'
+      // }, 50 * i)
     }
   }
 
-  animateShortestPath(nodesInShortestPathOrder: Node[]) {
-    for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
+  moveStartNode(nodesInShortestPathOrder: Node[]) {
+    for (let i = 1; i < nodesInShortestPathOrder.length; i++) {
       setTimeout(() => {
         const node = nodesInShortestPathOrder[i]
         let displayNode = document.getElementById(`node-${node.row}-${node.col}`)
 
-        if (displayNode !== null) displayNode.className =
-          'node node-shortest-path'
-      }, 50 * i)
+        if (displayNode !== null) {
+          displayNode.className = 'node node-start'
+          this.setState({ startCoord: { row: node.row, col: node.col } })
+        }
+
+        const prevNode = nodesInShortestPathOrder[i - 1]
+        let prevdisplayNode = document.getElementById(`node-${prevNode.row}-${prevNode.col}`)
+
+        if (prevdisplayNode !== null) {
+          prevdisplayNode.className = 'node'
+        }
+
+      }, 100 * i)
     }
   }
 
   visualizePathfinder(pathfinder: Pathfinder) {
-    const { grid } = this.state
-    const startNode = grid[START_NODE_ROW][START_NODE_COL]
-    const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL]
-    const visitedNodesInOrder = pathfinder(grid, startNode, finishNode)
+    const { grid, startCoord, endCoord } = this.state
+    const startNode = grid[startCoord.row][startCoord.col]
+    const finishNode = grid[endCoord.row][endCoord.col]
+    pathfinder(grid, startNode, finishNode)
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode)
-    this.animatePathfinder(visitedNodesInOrder, nodesInShortestPathOrder)
+    // this.animatePathfinder(visitedNodesInOrder, nodesInShortestPathOrder)
+    this.highlightShortestPath(nodesInShortestPathOrder)
+    this.moveStartNode(nodesInShortestPathOrder)
   }
 
   toggle = () => this.setState((prevState) => ({ dropdownOpen: !prevState.dropdownOpen }))
@@ -145,7 +179,7 @@ export default class PathfindingVisualizer extends Component<Props, State> {
     return (
       <div>
         <Button color="primary" onClick={() => this.visualizePathfinder(pathfinder)}>
-          Visualize {pathfinderName}
+          Move via {pathfinderName}
         </Button>
         <Dropdown isOpen={dropdownOpen} toggle={this.toggle}>
           <DropdownToggle caret>

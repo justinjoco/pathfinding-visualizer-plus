@@ -8,6 +8,7 @@ export function bfs(grid: Grid, startNode: Node, finishNode: Node): Node[] {
     startNode.isVisited = true
     queue.push(startNode)
     visitedNodesInOrder.push(startNode)
+    updateUnvisitedNeighbors(startNode, grid)
 
     while (queue) {
         const v = queue.shift()
