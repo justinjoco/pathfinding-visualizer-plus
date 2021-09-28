@@ -1,4 +1,4 @@
-# Pathfinding Visualizer Plus
+# Pathing Simulator
 
 This project is based off of Clement Mihailescu's [Pathfinding Visualizer project](https://github.com/clementmihailescu/Pathfinding-Visualizer). To make it more my own, I made a series of modifications to the original tutorial:
 

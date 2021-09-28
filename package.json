@@ -1,8 +1,8 @@
 {
-  "name": "pathfinding-visualizer-plus",
+  "name": "pathing-simulator",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://justinjoco.github.io/pathfinding-visualizer-plus",
+  "homepage": "https://justinjoco.github.io/pathing-simulator",
   "dependencies": {
     "@types/jest": "^27.0.2",
     "@types/node": "^16.10.1",

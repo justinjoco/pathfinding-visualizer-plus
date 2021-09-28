@@ -8,7 +8,7 @@ import { aStar } from '../model/a_star'
 
 import { getNodesInShortestPathOrder } from '../model/utilities'
 import { Grid, Node } from '../common'
-import './PathfindingVisualizer.css'
+import './PathingSimulator.css'
 
 const START_NODE_ROW = 10
 const START_NODE_COL = 15
@@ -53,7 +53,7 @@ const instructionMap = {
   [Setting.StartNode]: "Click on a node to set the start node",
   [Setting.EndNode]: "Click on a node to set the end location"
 }
-export default class PathfindingVisualizer extends Component<Props, State> {
+export default class PathingSimulator extends Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
@@ -232,7 +232,7 @@ export default class PathfindingVisualizer extends Component<Props, State> {
 
     return (
       <div>
-        <h1>Pathfinding Visualizer Plus</h1>
+        <h1>Pathing Simulator</h1>
         <Button color="primary" onClick={() => this.visualizePathfinder(pathfinder)}>
           Move via {pathfinderName}
         </Button>
@@ -261,14 +261,16 @@ export default class PathfindingVisualizer extends Component<Props, State> {
               <div key={rowIdx}>
                 {row.map((node, nodeIdx) => {
                   const { row, col, isWall } = node
+                  const isStart = row === startCoord.row && col === startCoord.col
+                  const isFinish = row === endCoord.row && col === endCoord.col
                   return (
                     <DisplayNode
                       key={nodeIdx}
                       row={row}
                       col={col}
-                      isStart={row === startCoord.row && col === startCoord.col}
-                      isFinish={row === endCoord.row && col === endCoord.col}
-                      isWall={isWall}
+                      isStart={isStart}
+                      isFinish={isFinish}
+                      isWall={isWall && !(isFinish || isStart)}
                       onMouseDown={(row: number, col: number) => this.handleMouseDown(row, col)}
                       onMouseEnter={(row: number, col: number) =>
                         this.handleMouseEnter(row, col)

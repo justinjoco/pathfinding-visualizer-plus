@@ -1,4 +1,4 @@
-name: Pathfinding Visualizer Plus
+name: Pathing Simulator
 
 on:
   push:
